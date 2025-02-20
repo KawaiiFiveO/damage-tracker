@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Damage Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h2>RPG Damage Tracker</h2>
+    
+    <div class="flex-container">
+        <!-- Left Column: Add Creature & Add Player -->
+        <div class="left-column">
+            <div class="container">
+                <h3>Add Creature</h3>
+
+                <div class="input-group">
+                    <label>Name:</label>
+                    <input type="text" id="creature-name" placeholder="Kobold">
+                </div>
+
+                <div class="input-group">
+                    <label>Max Health:</label>
+                    <input type="number" id="creature-health" placeholder="50">
+                </div>
+
+                <div class="input-group">
+                    <label>Critical HP Threshold:</label>
+                    <input type="number" id="creature-critical" placeholder="40">
+                </div>
+                
+                <button onclick="addCreature()">Add Creature</button>
+            </div>
+
+            <div class="container">
+                <h3>Add Player</h3>
+
+                <div class="input-group">
+                    <label>Name:</label>
+                    <input type="text" id="player-name" placeholder="Wizard">
+                </div>
+
+                <div class="input-group">
+                    <label>Max Health:</label>
+                    <input type="number" id="player-health" placeholder="100">
+                </div>
+                
+                <button onclick="addPlayer()">Add Player</button>
+            </div>
+        </div>
+
+        <!-- Right Column: Creatures & Players -->
+        <div class="right-column">
+            <div class="container">
+                <h3>Creatures</h3>
+                <div id="creature-list"></div>
+            </div>
+
+            <div class="container">
+                <h3>Players</h3>
+                <div id="player-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
