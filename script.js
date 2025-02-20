@@ -100,6 +100,7 @@ function renderCreatures() {
                 <br>
                 <button onclick="modifyDamage(${creature.id}, 'damage')">Add Damage</button>
                 <button onclick="modifyDamage(${creature.id}, 'heal')">Subtract Damage</button>
+                <button class="remove" onclick="removeCreature(${creature.id})">✖</button>
             </div>
         `;
     });
@@ -133,6 +134,17 @@ function renderPlayers() {
             <br>
             <button onclick="modifyPlayerHealth(${player.id}, 'damage')">Take Damage</button>
             <button onclick="modifyPlayerHealth(${player.id}, 'heal')">Heal</button>
+            <button class="remove" onclick="removePlayer(${player.id})">✖</button>
         </div>
     `).join('');
+}
+
+function removePlayer(id) {
+    players = players.filter(player => player.id !== id);
+    renderPlayers();
+}
+
+function removeCreature(id) {
+    creatures = creatures.filter(creature => creature.id !== id);
+    renderCreatures();
 }

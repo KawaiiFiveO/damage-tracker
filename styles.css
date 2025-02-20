@@ -58,6 +58,22 @@ button:hover {
     background: #5b6eae;
 }
 
+button.remove {
+    width: 10%;
+    padding: 12px;
+    background: #f04747;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+button.remove:hover {
+    background: #d42b2b;
+}
+
 .creature, .player {
     background: #99aab5;
     color: black;
