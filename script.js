@@ -106,6 +106,7 @@ function renderCreatures() {
             </div>
         `;
     });
+    renderSummary();
 }
 
 function modifyPlayerHealth(id, type) {
@@ -121,7 +122,7 @@ function modifyPlayerHealth(id, type) {
         } else if (type === "heal") {
             player.currentHealth = Math.min(player.maxHealth, player.currentHealth + amount);
         }
-        inputField.value = '';  // Clear input after the action
+        inputField.value = '';
         renderPlayers();
     }
 }
@@ -139,6 +140,7 @@ function renderPlayers() {
             <button class="remove" onclick="removePlayer(${player.id})">✖</button>
         </div>
     `).join('');
+    renderSummary();
 }
 
 function removePlayer(id) {
@@ -150,3 +152,55 @@ function removeCreature(id) {
     creatures = creatures.filter(creature => creature.id !== id);
     renderCreatures();
 }
+
+function renderSummary() {
+    const summaryList = document.getElementById('summary-list');
+
+    let creatureSummary = creatures.map(creature => {
+        let statusClass = creature.damageTaken >= creature.maxHealth ? "dead" :
+                          creature.damageTaken >= creature.criticalThreshold ? "critical" : "alive";
+
+        let statusText = creature.damageTaken >= creature.maxHealth ? "☠️ Dead" :
+                         creature.damageTaken >= creature.criticalThreshold ? "🟠 Critical" : "🟢 Alive";
+
+        return `
+            <div class="summary-item">
+                <strong>${creature.name}</strong> - Max HP: ${creature.hideHealth ? "???" : creature.maxHealth}
+                <br>
+                Damage Taken: ${creature.damageTaken}
+                <span class="status ${statusClass}">${statusText}</span>
+            </div>
+        `;
+    }).join('');
+
+    let playerSummary = players.map(player => `
+        <div class="summary-item">
+            <strong>${player.name}</strong> - HP: ${player.currentHealth}/${player.maxHealth}
+        </div>
+    `).join('');
+
+    summaryList.innerHTML = `
+        <h4>Creatures</h4>
+        ${creatures.length ? creatureSummary : "<em>No creatures added.</em>"}
+        <h4>Players</h4>
+        ${players.length ? playerSummary : "<em>No players added.</em>"}
+    `;
+}
+
+function toggleSummary() {
+    const summaryList = document.getElementById('summary-list');
+    const summaryHeader = document.getElementById('summary-header');
+
+    if (summaryList.classList.contains("collapsed")) {
+        summaryList.classList.remove("collapsed");
+        summaryHeader.innerHTML = "Summary ▲";
+    } else {
+        summaryList.classList.add("collapsed");
+        summaryHeader.innerHTML = "Summary ▼";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    renderSummary();
+});
+

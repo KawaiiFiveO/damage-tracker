@@ -11,6 +11,11 @@ h2 {
     margin-bottom: 15px;
 }
 
+h4 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .container {
     max-width: 500px;
     margin: 20px auto;
@@ -122,6 +127,44 @@ button.remove:hover {
 
 .right-column {
     max-width: 600px;
+}
+
+.summary-item {
+    background: #2c2f33;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 5px;
+    text-align: center;
+    color: white;
+}
+
+#summary-list {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    padding: 0 10px;
+}
+
+#summary-list:not(.collapsed) {
+    max-height: 500px;
+    padding: 10px;
+}
+
+#summary-header {
+    cursor: pointer;
+    background: #2c2f33;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+#summary-header:hover {
+    background: #40444b;
 }
 
 @media screen and (max-width: 768px) {
