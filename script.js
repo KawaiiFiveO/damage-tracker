@@ -5,6 +5,7 @@ function addCreature() {
     const name = document.getElementById('creature-name').value;
     const health = parseInt(document.getElementById('creature-health').value, 10);
     const critical = parseInt(document.getElementById('creature-critical').value, 10);
+    const hideHealth = document.getElementById('hide-creature-health').checked;
 
     if (!name || isNaN(health) || health <= 0 || isNaN(critical) || critical <= 0 || critical > health) {
         alert("Enter valid values (Critical HP should be lower than max health).");
@@ -16,7 +17,8 @@ function addCreature() {
         name: name,
         maxHealth: health,
         criticalThreshold: critical,
-        damageTaken: 0
+        damageTaken: 0,
+        hideHealth: hideHealth
     };
 
     creatures.push(creature);
@@ -91,7 +93,7 @@ function renderCreatures() {
 
         list.innerHTML += `
             <div class="creature">
-                <strong>${creature.name}</strong> - Max HP: ${creature.maxHealth}
+                <strong>${creature.name}</strong> - Max HP: ${creature.hideHealth ? "???" : creature.maxHealth}
                 <br>
                 Damage Taken: ${creature.damageTaken} 
                 <span class="status ${statusClass}">${statusText}</span>
