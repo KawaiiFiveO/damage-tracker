@@ -167,6 +167,23 @@ button.remove:hover {
     background: #40444b;
 }
 
+footer {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    margin-top: 20px;
+}
+
+footer a {
+    color: white;
+    text-decoration: underline;
+}
+
+
 @media screen and (max-width: 768px) {
     .flex-container {
         flex-direction: column;
