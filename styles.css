@@ -50,7 +50,7 @@ input {
 button {
     width: 35%;
     padding: 12px;
-    background: #7289da;
+    background: #00b377;
     color: white;
     border: none;
     border-radius: 5px;
@@ -60,13 +60,13 @@ button {
 }
 
 button:hover {
-    background: #5b6eae;
+    background: #009966;
 }
 
 button.remove {
     width: 10%;
     padding: 12px;
-    background: #f04747;
+    background: #B22222;
     color: white;
     border: none;
     border-radius: 5px;
@@ -76,12 +76,28 @@ button.remove {
 }
 
 button.remove:hover {
-    background: #d42b2b;
+    background: #ab2121;
+}
+
+button.player {
+    width: 25%;
+    padding: 12px;
+    background: #00b377;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+button.player:hover {
+    background: #009966;
 }
 
 .creature, .player {
-    background: #99aab5;
-    color: black;
+    background: #2c2f33;
+    color: white;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
@@ -89,23 +105,23 @@ button.remove:hover {
 
 .status {
     font-weight: bold;
-    padding: 5px;
+    padding: 4px;
     border-radius: 5px;
     display: inline-block;
 }
 
 .alive {
-    background: #43b581;
+    background: #006400;
     color: white;
 }
 
 .critical {
-    background: #faa61a;
+    background: #FF8C00;
     color: white;
 }
 
 .dead {
-    background: #f04747;
+    background: #DC143C;
     color: white;
 }
 
@@ -183,6 +199,9 @@ footer a {
     text-decoration: underline;
 }
 
+.negative-hp {
+    color: tomato;
+}
 
 @media screen and (max-width: 768px) {
     .flex-container {

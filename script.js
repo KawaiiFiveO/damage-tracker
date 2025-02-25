@@ -8,7 +8,7 @@ function addCreature() {
     const hideHealth = document.getElementById('hide-creature-health').checked;
 
     if (!name || isNaN(health) || health <= 0 || isNaN(critical) || critical <= 0 || critical > health) {
-        alert("Enter valid values (Critical HP should be lower than max health).");
+        alert("Enter valid values (Critical Threshold should be lower than Death Threshold).");
         return;
     }
 
@@ -38,7 +38,8 @@ function addPlayer() {
         id: Date.now(),
         name: name,
         maxHealth: health,
-        currentHealth: health
+        currentHealth: health,
+        tempHealth: 0
     };
 
     players.push(player);
@@ -63,21 +64,23 @@ function modifyDamage(id, type) {
     }
 }
 
-function modifyHealth(id, type) {
-    const inputField = document.getElementById(`hp-${id}`);
+function modifyCreatureHealth(id, type) {
+    const inputField = document.getElementById(`damage-${id}`);
     let amount = parseInt(inputField.value, 10);
 
     if (isNaN(amount) || amount < 0) return;
 
-    const player = players.find(p => p.id === id);
-    if (player) {
-        if (type === "heal") {
-            player.currentHealth = Math.min(player.maxHealth, player.currentHealth + amount);
-        } else if (type === "damage") {
-            player.currentHealth = Math.max(0, player.currentHealth - amount);
+    const creature = creatures.find(c => c.id === id);
+    if (creature) {
+        if (type === "increase") {
+            creature.maxHealth += amount;
+            creature.criticalThreshold += amount;
+        } else if (type === "decrease") {
+            creature.maxHealth = Math.max(0, creature.maxHealth - amount);
+            creature.criticalThreshold = Math.max(0, creature.criticalThreshold - amount);
         }
         inputField.value = '';  
-        renderPlayers();
+        renderCreatures();
     }
 }
 
@@ -93,15 +96,15 @@ function renderCreatures() {
 
         list.innerHTML += `
             <div class="creature">
-                <strong>${creature.name}</strong> - Max HP: ${creature.hideHealth ? "???" : creature.maxHealth}
+                <strong>${creature.name}</strong> - <span class="status ${statusClass}">${statusText}</span>
                 <br>
-                Damage Taken: ${creature.damageTaken} 
-                <span class="status ${statusClass}">${statusText}</span>
+                DT: ${creature.hideHealth ? "???" : creature.maxHealth} - 
+                Total Damage: ${creature.damageTaken}
                 <br>
                 <input type="number" id="damage-${creature.id}" class="hp-input" placeholder="Enter value">
                 <br>
                 <button onclick="modifyDamage(${creature.id}, 'damage')">Add Damage</button>
-                <button onclick="modifyDamage(${creature.id}, 'heal')">Subtract Damage</button>
+                <button onclick="modifyCreatureHealth(${creature.id}, 'increase')">Increase DT/CT (Heal)</button>
                 <button class="remove" onclick="removeCreature(${creature.id})">✖</button>
             </div>
         `;
@@ -118,9 +121,14 @@ function modifyPlayerHealth(id, type) {
     const player = players.find(p => p.id === id);
     if (player) {
         if (type === "damage") {
-            player.currentHealth = Math.max(0, player.currentHealth - amount);
+            let temp = player.tempHealth;
+            player.tempHealth = Math.max(0, player.tempHealth - amount);
+            amount = Math.max(0, amount - temp);
+            player.currentHealth = player.currentHealth - amount;
         } else if (type === "heal") {
             player.currentHealth = Math.min(player.maxHealth, player.currentHealth + amount);
+        } else if (type === "addtemp") {
+            player.tempHealth += amount;
         }
         inputField.value = '';
         renderPlayers();
@@ -129,19 +137,26 @@ function modifyPlayerHealth(id, type) {
 
 function renderPlayers() {
     const playerList = document.getElementById('player-list');
-    playerList.innerHTML = players.map(player => `
-        <div class="player">
-            <strong>${player.name}</strong> - HP: ${player.currentHealth}/${player.maxHealth}
-            <br>
-            <input type="number" id="player-hp-${player.id}" class="heal-input" placeholder="Enter value">
-            <br>
-            <button onclick="modifyPlayerHealth(${player.id}, 'damage')">Take Damage</button>
-            <button onclick="modifyPlayerHealth(${player.id}, 'heal')">Heal</button>
-            <button class="remove" onclick="removePlayer(${player.id})">✖</button>
-        </div>
-    `).join('');
+    playerList.innerHTML = players.map(player => {
+        let hpClass = player.currentHealth < 0 ? "negative-hp" : "";
+        let tempHPDisplay = player.tempHealth > 0 ? ` + ${player.tempHealth}` : "";
+        return `
+            <div class="player">
+                <strong>${player.name}</strong> - HP: 
+                <span class="${hpClass}">${player.currentHealth}</span>/${player.maxHealth}${tempHPDisplay}
+                <br>
+                <input type="number" id="player-hp-${player.id}" class="heal-input" placeholder="Enter value">
+                <br>
+                <button class="player" onclick="modifyPlayerHealth(${player.id}, 'damage')">Take Damage</button>
+                <button class="player" onclick="modifyPlayerHealth(${player.id}, 'heal')">Add HP (Heal)</button>
+                <button class="player" onclick="modifyPlayerHealth(${player.id}, 'addtemp')">Add Temp HP</button>
+                <button class="remove" onclick="removePlayer(${player.id})">✖</button>
+            </div>
+        `;
+    }).join('');
     renderSummary();
 }
+
 
 function removePlayer(id) {
     players = players.filter(player => player.id !== id);
@@ -165,19 +180,25 @@ function renderSummary() {
 
         return `
             <div class="summary-item">
-                <strong>${creature.name}</strong> - Max HP: ${creature.hideHealth ? "???" : creature.maxHealth}
+                <strong>${creature.name}</strong> - <span class="status ${statusClass}">${statusText}</span>
                 <br>
-                Damage Taken: ${creature.damageTaken}
-                <span class="status ${statusClass}">${statusText}</span>
+				DT: ${creature.hideHealth ? "???" : creature.maxHealth} - 
+                Total Damage: ${creature.damageTaken}
             </div>
         `;
     }).join('');
 
-    let playerSummary = players.map(player => `
-        <div class="summary-item">
-            <strong>${player.name}</strong> - HP: ${player.currentHealth}/${player.maxHealth}
-        </div>
-    `).join('');
+    let playerSummary = players.map(player => {
+        let hpClass = player.currentHealth < 0 ? "negative-hp" : "";
+        let tempHPDisplay = player.tempHealth > 0 ? ` + ${player.tempHealth}` : "";
+
+        return `
+            <div class="summary-item">
+                <strong>${player.name}</strong> - HP: 
+                <span class="${hpClass}">${player.currentHealth}</span>/${player.maxHealth}${tempHPDisplay}
+            </div>
+        `;
+    }).join('');
 
     summaryList.innerHTML = `
         <h4>Creatures</h4>
